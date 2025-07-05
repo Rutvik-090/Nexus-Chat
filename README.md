@@ -1,4 +1,4 @@
-# 💬 Whispr — A Private Chat App Using Unique IDs (MERN Stack)
+# 💬 Nexus — A Private Chat App Using Unique IDs (MERN Stack)
 
 Whispr is a modern, privacy-first real-time chat application where users connect without sharing phone numbers or social media IDs. Users get a unique username or ID on signup and can start conversations via global search or QR codes. Chats are secure and auto-deleted based on custom timers.
 
