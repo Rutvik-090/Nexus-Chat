@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../context/AuthContext";
 import assets from "../assets/assets";
 
 function LoginPage() {
@@ -9,6 +10,23 @@ function LoginPage() {
   const [bio, setBio] = useState("");
   const [isDataSubmitted, setIsDataSubmitted] = useState(false);
 
+  const { login } = useContext(AuthContext);
+
+  const onSubmitHandler = (e) => {
+    e.preventDefault();
+    if (currState === "Sign Up" && !isDataSubmitted) {
+      setIsDataSubmitted(true);
+      return;
+    }
+
+    login(currState === "Sign Up" ? "signup" : "login", {
+      fullName,
+      email,
+      password,
+      bio,
+    });
+  };
+
   return (
     <div className="min-h-screen bg-cover bg-center flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl">
       {/* Left Section*/}
@@ -16,12 +34,20 @@ function LoginPage() {
 
       {/* Right Section*/}
       <form
+        onSubmit={onSubmitHandler}
         action=""
         className="border-2 bg-white/8 text-white border-gray-500 p-6 flex flex-col gap-6 rounded-lg shadow-lg"
       >
         <h2 className="font-medium text-2xl flex justify-between items-center">
           {currState}
-          <img src={assets.arrow_icon} alt="" className="w-5 cursor-pointer" />
+          {isDataSubmitted && (
+            <img
+              src={assets.arrow_icon}
+              alt=""
+              className="w-5 cursor-pointer"
+              onClick={() => setIsDataSubmitted(false)}
+            />
+          )}
         </h2>
 
         {currState === "Sign Up" && !isDataSubmitted && (
