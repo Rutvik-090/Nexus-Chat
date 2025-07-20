@@ -1,10 +1,28 @@
-import { useContext, useState } from "react";
+import axios from "axios";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import assets from "../assets/assets";
 
 function ProfilePage() {
   const { authUser, updateProfile } = useContext(AuthContext);
+  const [qrImage, setQrImage] = useState("");
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    const fetchQR = async () => {
+      try {
+        const { data } = await axios.get("/api/qr/generate");
+        if (data.success) {
+          setQrImage(data.qrImage);
+          setUsername(data.username);
+        }
+      } catch (err) {
+        console.error("QR Error:", err.message);
+      }
+    };
+    fetchQR();
+  }, []);
 
   const [selectedImg, setSelectedImage] = useState(null);
   const navigate = useNavigate();
@@ -30,13 +48,9 @@ function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-cover bg-no-repeat flex items-center justify-center">
-      {/* Left */}
-
-      <div className="w-5/6 max-w-2xl backdrop-blur-2xl text-gray-300 border-2 border-gray-600 flex items-center justify-center max-sm:flex-col-reverse rounded-lg">
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-5 p-10 flex-1"
-        >
+      <div className="w-5/6 max-w-4xl backdrop-blur-2xl text-gray-300 border-2 border-gray-600 flex flex-col md:flex-row rounded-lg p-6 gap-6">
+        {/* Left: Profile Form */}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5 flex-1">
           <h3 className="text-lg">Profile Details</h3>
           <label
             htmlFor="avatar"
@@ -56,6 +70,7 @@ function ProfilePage() {
                   : assets.avatar_icon
               }
               className={`w-12 h-12 ${selectedImg && "rounded-full"}`}
+              alt="Avatar"
             />
             upload profile image
           </label>
@@ -86,12 +101,28 @@ function ProfilePage() {
           </button>
         </form>
 
-        <img
-          src={authUser?.profilePic || assets.logo_icon}
-          className={`max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10 ${
-            selectedImg && "rounded-full"
-          }`}
-        />
+        {/* Right: QR & Username */}
+        <div className="flex flex-col items-center justify-center md:w-1/3 gap-4 border-l border-gray-600 pl-6">
+          <div className="text-center">
+            <h3 className="text-md text-white">Your Username</h3>
+            <p className="bg-gray-800 px-4 py-1 rounded-full text-sm mt-1">
+              {username || "Loading..."}
+            </p>
+          </div>
+
+          <div className="text-center">
+            <h3 className="text-md text-white">Your QR Code</h3>
+            {qrImage ? (
+              <img
+                src={qrImage}
+                alt="QR Code"
+                className="w-32 h-32 border border-gray-500 p-1 rounded"
+              />
+            ) : (
+              <p className="text-sm text-gray-400">Loading QR...</p>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

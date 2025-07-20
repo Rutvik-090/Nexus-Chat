@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import assets from "../assets/assets";
 
@@ -9,7 +10,7 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [bio, setBio] = useState("");
   const [isDataSubmitted, setIsDataSubmitted] = useState(false);
-
+  const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
   const onSubmitHandler = (e) => {
@@ -17,6 +18,15 @@ function LoginPage() {
     if (currState === "Sign Up" && !isDataSubmitted) {
       setIsDataSubmitted(true);
       return;
+    }
+
+    const redirectUsername = localStorage.getItem("chat_redirect_username");
+
+    if (redirectUsername) {
+      localStorage.removeItem("chat_redirect_username");
+      navigate(`/chat/${redirectUsername}`);
+    } else {
+      navigate("/");
     }
 
     login(currState === "Sign Up" ? "signup" : "login", {
@@ -30,7 +40,11 @@ function LoginPage() {
   return (
     <div className="min-h-screen bg-cover bg-center flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl">
       {/* Left Section*/}
-      <img src={assets.logo_big} alt="" className="w-[min-(30vw,250px)]" />
+      {/* <img src={assets.logo_big} alt="" className="w-[min-(30vw,250px)]" /> */}
+      <div className="flex flex-col items-center gap-2 text-gray-500 max-md:hidden">
+        <h1 className=" text-white text-7xl">Nexus</h1>
+        <p className="text-2xl font-medium">Connect, Chat, Vanish</p>
+      </div>
 
       {/* Right Section*/}
       <form

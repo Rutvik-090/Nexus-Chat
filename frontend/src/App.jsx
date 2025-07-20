@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { Toaster } from "react-hot-toast";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import ChatRedirect from "./pages/ChatRedirect";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -25,6 +26,8 @@ function App() {
           path="/profile"
           element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
         ></Route>
+
+        <Route path="/chat/:username" element={<ChatRedirect />} />
       </Routes>
     </div>
   );

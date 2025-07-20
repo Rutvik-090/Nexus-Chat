@@ -41,9 +41,10 @@ export const ChatProvider = ({ children }) => {
   // Function to send message to selected user
   const sendMessage = async (messageData) => {
     try {
+      const { text, image, timer } = messageData;
       const { data } = await axios.post(
         `/api/messages/send/${selectedUser._id}`,
-        messageData
+        { text, image, timer }
       );
 
       if (data.success) {
